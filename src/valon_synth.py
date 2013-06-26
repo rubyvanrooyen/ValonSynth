@@ -80,10 +80,11 @@ def _unpack_freq_registers(data):
 
 class Synthesizer:
     """A simple interface to the Valon 500x synthesizer."""
-    def __init__(self, port):
+    def __init__(self, port, timeout=1.0):
         self.conn = serial.Serial(None, 9600, serial.EIGHTBITS,
                                   serial.PARITY_NONE, serial.STOPBITS_ONE)
         self.conn.setPort(port)
+        self.conn.setTimeout(timeout)
 
     def get_frequency(self, synth):
         """
