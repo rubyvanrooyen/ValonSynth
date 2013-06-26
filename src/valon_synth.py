@@ -96,10 +96,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         ncount, frac, mod, dbf = _unpack_freq_registers(data)
         epdf = self._get_epdf(synth)
@@ -143,17 +145,22 @@ class Synthesizer:
             mod = 1
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        old_data = self.conn.read(24)
-        checksum = self.conn.read(1)
+        try:
+            self.conn.write(data)
+            old_data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(old_data, checksum)
         data = struct.pack('>B24s', 0x00 | synth,
                            _pack_freq_registers(ncount, frac, mod,
                                                 dbf, old_data))
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -163,10 +170,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x81)
-        self.conn.write(data)
-        data = self.conn.read(4)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(4)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         freq = struct.unpack('>I', data)[0]
         return freq
@@ -183,9 +192,11 @@ class Synthesizer:
         self.conn.open()
         data = struct.pack('>BI', 0x01, freq)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -201,10 +212,12 @@ class Synthesizer:
         rfl_table = {0: -4, 1: -1, 2: 2, 3: 5}
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         _, _, _, _, reg4, _ = struct.unpack('>IIIIII', data)
         rfl = (reg4 >> 3) & 0x03
@@ -229,9 +242,12 @@ class Synthesizer:
             return False
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg4 &= 0xffffffe7
@@ -239,9 +255,11 @@ class Synthesizer:
         data = struct.pack('>BIIIIII', 0x00 | synth,
                             reg0, reg1, reg2, reg3, reg4, reg5)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -262,10 +280,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         _, _, reg2, _, _, _ = struct.unpack('>IIIIII', data)
         low_spur = ((reg2 >> 30) & 1) & ((reg2 >> 29) & 1)
@@ -301,9 +321,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg2 &= 0x9c003fff
@@ -313,9 +336,11 @@ class Synthesizer:
         data = struct.pack('>BIIIIII', 0x00 | synth,
                             reg0, reg1, reg2, reg3, reg4, reg5)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -326,10 +351,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x86)
-        self.conn.write(data)
-        data = self.conn.read(1)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(1)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         is_ext = struct.unpack('>B', data)[0]
         return is_ext & 1
@@ -346,9 +373,11 @@ class Synthesizer:
         self.conn.open()
         data = struct.pack('>BB', 0x06, e_not_i & 1)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -363,10 +392,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x83 | synth)
-        self.conn.write(data)
-        data = self.conn.read(4)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(4)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         return struct.unpack('>HH', data)
 
@@ -388,9 +419,11 @@ class Synthesizer:
         self.conn.open()
         data = struct.pack('>BHH', 0x03 | synth, low, high)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -405,10 +438,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x86 | synth)
-        self.conn.write(data)
-        data = self.conn.read(1)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(1)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         mask = (synth << 1) or 0x20
         lock = struct.unpack('>B', data)[0] & mask
@@ -425,10 +460,12 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x82 | synth)
-        self.conn.write(data)
-        data = self.conn.read(16)
-        checksum = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data)
+            data = self.conn.read(16)
+            checksum = self.conn.read(1)
+        finally:
+            self.conn.close()
         #_verify_checksum(data, checksum)
         return data
 
@@ -447,9 +484,11 @@ class Synthesizer:
         self.conn.open()
         data = struct.pack('>B16s', 0x02 | synth, label)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -462,9 +501,11 @@ class Synthesizer:
         self.conn.open()
         data = struct.pack('>B', 0x40)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
