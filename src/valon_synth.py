@@ -225,6 +225,56 @@ class Synthesizer:
         rf_level = rfl_table.get(rfl)
         return rf_level
 
+    def rf_disable(self, synth):
+        """
+        Disable RF output.
+
+        @param synth : synthesizer address, 0 or 8
+        @type  synth : int
+        """
+        self.conn.open()
+        data = struct.pack('>B', 0x80 | synth)
+        self.conn.write(data)
+        data = self.conn.read(24)
+        checksum = self.conn.read(1)
+        #_verify_checksum(data, checksum)
+        reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
+        reg4 &= 0xffffffdf # RF Output power up
+        ref4 |= 1 << 9     # VCO power down
+        data = struct.pack('>BIIIIII', 0x00 | synth,
+                            reg0, reg1, reg2, reg3, reg4, reg5)
+        checksum = _generate_checksum(data)
+        self.conn.write(data + checksum)
+        data = self.conn.read(1)
+        self.conn.close()
+        ack = struct.unpack('>B', data)[0]
+        return ack == ACK
+
+    def rf_enable(self, synth):
+        """
+        Enable RF output.
+
+        @param synth : synthesizer address, 0 or 8
+        @type  synth : int
+        """
+        self.conn.open()
+        data = struct.pack('>B', 0x80 | synth)
+        self.conn.write(data)
+        data = self.conn.read(24)
+        checksum = self.conn.read(1)
+        #_verify_checksum(data, checksum)
+        reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
+        reg4 &= 0xfffff7ff # VCO power up
+        reg4 |= 1 << 5     # RF Output power up
+        data = struct.pack('>BIIIIII', 0x00 | synth,
+                            reg0, reg1, reg2, reg3, reg4, reg5)
+        checksum = _generate_checksum(data)
+        self.conn.write(data + checksum)
+        data = self.conn.read(1)
+        self.conn.close()
+        ack = struct.unpack('>B', data)[0]
+        return ack == ACK
+
     def set_rf_level(self, synth, rf_level):
         """
         Set RF level
