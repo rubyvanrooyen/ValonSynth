@@ -240,7 +240,7 @@ class Synthesizer:
         #_verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg4 &= 0xffffffdf # RF Output power up
-        ref4 |= 1 << 9     # VCO power down
+        reg4 |= 1 << 9     # VCO power down
         data = struct.pack('>BIIIIII', 0x00 | synth,
                             reg0, reg1, reg2, reg3, reg4, reg5)
         checksum = _generate_checksum(data)
