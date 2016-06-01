@@ -496,7 +496,10 @@ class Synthesizer:
         finally:
             self.conn.close()
         #_verify_checksum(data, checksum)
-        mask = (synth << 1) or 0x20
+	if synth == SYNTH_A:
+	  mask = 1 << 4
+	else:
+	  mask = 1 << 5
         lock = struct.unpack('>B', data)[0] & mask
         return lock > 0
 
