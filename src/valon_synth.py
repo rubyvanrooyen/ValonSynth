@@ -31,7 +31,7 @@ import serial
 __author__ = "Patrick Brandt"
 __copyright__ = "Copyright 2011, Associated Universities, Inc."
 __credits__ = ["Patrick Brandt, Stewart Rumley, Steven Stark, Glenn Jones,"
-               " Jack Hickish"]
+               " Jack Hickish, Deneys Maartens"]
 __license__ = "GPL"
 __version__ = "1.0"
 __maintainer__ = "Patrick Brandt"
