@@ -15,9 +15,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 # Correspondence concerning GBT software should be addressed as follows:
-#	GBT Operations
-#	National Radio Astronomy Observatory
-#	P. O. Box 2
-#	Green Bank, WV 24944-0002 USA
+#       GBT Operations
+#       National Radio Astronomy Observatory
+#       P. O. Box 2
+#       Green Bank, WV 24944-0002 USA
 
-from valon_synth import Synthesizer, SYNTH_A, SYNTH_B, INT_REF, EXT_REF
+from valon_synth import Synthesizer, SYNTH_A, SYNTH_B, INT_REF, EXT_REF  # noqa
