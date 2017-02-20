@@ -87,8 +87,8 @@ class Synthesizer:
     def __init__(self, port, timeout=1.0):
         self.conn = serial.Serial(None, 9600, serial.EIGHTBITS,
                                   serial.PARITY_NONE, serial.STOPBITS_ONE)
-        self.conn.setPort(port)
-        self.conn.setTimeout(timeout)
+        self.conn.port = port
+        self.conn.timeout = timeout
 
     def get_frequency(self, synth):
         """Returns the current output frequency for the selected synthesizer.
