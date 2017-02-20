@@ -162,7 +162,7 @@ int Serial::serial_read(unsigned char *input_buffer, const int &number_of_bytes,
             {
                 // Flush input buffer.
                 #if defined (SOLARIS) || defined (LINUX)
-                ioctl(the_serial_port, TCFLSH, 0);
+                ioctl(the_serial_port, TCIFLUSH, 0);
                 #else
                 ioctl(the_serial_port, FIORFLUSH, 0);
                 #endif
@@ -207,7 +207,7 @@ int Serial::open_serial_port(const char *port_name)
     {
         // Flush serial port.
 #if defined (SOLARIS) || defined (LINUX)
-        ioctl(the_serial_port, TCFLSH, 0);
+        ioctl(the_serial_port, TCIOFLUSH, 0);
 #endif
 #if defined(VXWORKS)
         ioctl(the_serial_port, FIOFLUSH, 0);
