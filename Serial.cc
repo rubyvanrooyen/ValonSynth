@@ -1,19 +1,19 @@
 //# Copyright (C) 2011 Associated Universities, Inc. Washington DC, USA.
-//# 
+//#
 //# This program is free software; you can redistribute it and/or modify
 //# it under the terms of the GNU General Public License as published by
 //# the Free Software Foundation; either version 2 of the License, or
 //# (at your option) any later version.
-//# 
+//#
 //# This program is distributed in the hope that it will be useful, but
 //# WITHOUT ANY WARRANTY; without even the implied warranty of
 //# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //# General Public License for more details.
-//# 
+//#
 //# You should have received a copy of the GNU General Public License
 //# along with this program; if not, write to the Free Software
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//# 
+//#
 //# Correspondence concerning GBT software should be addressed as follows:
 //#    GBT Operations
 //#    National Radio Astronomy Observatory
@@ -121,7 +121,7 @@ int Serial::serial_write(const unsigned char *output_buffer,
 }
 
 
-int Serial::serial_read(unsigned char *input_buffer, const int &number_of_bytes, 
+int Serial::serial_read(unsigned char *input_buffer, const int &number_of_bytes,
                         const int timeo_us)
 {
     int bytes_received = 0;
@@ -156,8 +156,8 @@ int Serial::serial_read(unsigned char *input_buffer, const int &number_of_bytes,
                              &input_buffer[bytes_received],
 #endif
                              (number_of_bytes - bytes_received));
-                 
-            // was an error condition present?     
+
+            // was an error condition present?
             if (read_bytes < 0)
             {
                 // Flush input buffer.
@@ -168,7 +168,7 @@ int Serial::serial_read(unsigned char *input_buffer, const int &number_of_bytes,
                 #endif
                 return(read_bytes);
             }
-                 
+
             bytes_received += read_bytes;
 
             if (the_input_mode == Serial::canonical && bytes_received > 0)
@@ -234,11 +234,11 @@ int Serial::update_parity(const Serial::parity_choices &parity)
     switch (parity)
     {
         case Serial::odd:
-            the_termios.c_cflag |= (PARODD | PARENB);      
+            the_termios.c_cflag |= (PARODD | PARENB);
             break;
         case Serial::even:
-            the_termios.c_cflag |= PARENB;      
-            the_termios.c_cflag &= ~(PARODD);      
+            the_termios.c_cflag |= PARENB;
+            the_termios.c_cflag &= ~(PARODD);
             break;
         case Serial::none:
             the_termios.c_cflag &= ~PARENB;
@@ -288,7 +288,7 @@ int Serial::update_baud_rate(const int &baud_rate)
         cerr << "Cannot set baud rate" << endl;
         return (-1);
     }
- 
+
     speed_t speed;
 
     switch (baud_rate)
@@ -602,7 +602,7 @@ int Serial::set_raw_input_mode()
     // as BS-SP-BS.
     the_termios.c_lflag &= ~(ICANON | ISIG | ECHO | ECHOE);
     the_termios.c_iflag &= ~(INPCK | ISTRIP);
-    
+
     if (tcsetattr(the_serial_port, TCSAFLUSH, &the_termios) != 0)
     {
         // TBF: Error message
@@ -646,7 +646,7 @@ int Serial::set_canonical_input_mode()
     // Enable canonical mode, enable echoing of input characters, enable
     // echoing of erase character as BS-SP-BS.
     the_termios.c_lflag |= (ICANON | ECHO | ECHOE);
-    
+
     if (tcsetattr(the_serial_port, TCSAFLUSH, &the_termios) != 0)
     {
         // TBF: Error message
@@ -691,19 +691,19 @@ int Serial::set_other_flags()
     the_termios.c_lflag &= ~IEXTEN;
 
     // input flags:-
-    // Send a SIGINT when a break condition is detected, map CR to NL, 
+    // Send a SIGINT when a break condition is detected, map CR to NL,
     the_termios.c_iflag &= ~(BRKINT | ICRNL);
-    
+
     // control flags:-
     // Setting CLOCAL and CREAD ensures that the program will not become
     // the owner of the port and the serial interface driver will read
     // incoming data bytes.
     the_termios.c_cflag |= (CLOCAL | CREAD);
-                        
+
     // output flags:-
     // Turn off the output processing
     the_termios.c_oflag &= ~(OPOST);
-    
+
     // Set up 0 character minimum with no timeout.
     the_termios.c_cc[VMIN]  = 0;
     the_termios.c_cc[VTIME] = 0;

@@ -1,19 +1,19 @@
 //# Copyright (C) 2011 Associated Universities, Inc. Washington DC, USA.
-//# 
+//#
 //# This program is free software; you can redistribute it and/or modify
 //# it under the terms of the GNU General Public License as published by
 //# the Free Software Foundation; either version 2 of the License, or
 //# (at your option) any later version.
-//# 
+//#
 //# This program is distributed in the hope that it will be useful, but
 //# WITHOUT ANY WARRANTY; without even the implied warranty of
 //# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 //# General Public License for more details.
-//# 
+//#
 //# You should have received a copy of the GNU General Public License
 //# along with this program; if not, write to the Free Software
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-//# 
+//#
 //# Correspondence concerning GBT software should be addressed as follows:
 //#	GBT Operations
 //#	National Radio Astronomy Observatory
@@ -26,13 +26,13 @@
 
 
 // <summary>
-// This class provides a vehicle for serial communication on the vxWorks, 
+// This class provides a vehicle for serial communication on the vxWorks,
 // Linux, and Solaris platforms.
 // </summary>
 
 // <prerequisite>
-// <li> The configuration of the serial port that you wish to use (i.e. 
-//      baud rate, parity, port name, etc). 
+// <li> The configuration of the serial port that you wish to use (i.e.
+//      baud rate, parity, port name, etc).
 // </li>
 // </prerequisite>
 
@@ -41,7 +41,7 @@
 // </etymology>
 
 // <synopsis>
-// This class provides a portable way to use the serial port for 
+// This class provides a portable way to use the serial port for
 // program communication.  The two main member functions that enable this
 // communication are read and write.  Other member functions are provided
 // to configure the serial port as needed.  The default serial port
@@ -69,13 +69,13 @@
 //
 // The valid choices for input mode are raw and canonical.  These are
 // defined via the enumeration input_choices below.  Raw mode processes
-// the characters as they are typed.  Canonical mode handles the 
+// the characters as they are typed.  Canonical mode handles the
 // characters on a line by line basis - i.e. it waits for the '/n'
 // character before reading/writing.
 // </synopsis>
 
 // <motivation>
-// To contain all serial communication needs across multiple platforms 
+// To contain all serial communication needs across multiple platforms
 // within a single class.
 // </motivation>
 
@@ -134,7 +134,7 @@ public:
     // -1 on failure.
     int set_stop_bits(const int &stop_bits);
 
-    // set_hardware_flow_control accepts either 0 = No hardware flow 
+    // set_hardware_flow_control accepts either 0 = No hardware flow
     // control or 1 = Hardware flow control.  If the input parameter is
     // neither 0 nor 1, hardware flow control is disabled.  Returns 0 on
     // success, -1 on failure.
@@ -177,7 +177,7 @@ private:
     input_choices the_input_mode;
     // </group>
 
-    // These member functions set up parameters for the serial port over 
+    // These member functions set up parameters for the serial port over
     // which the user of this class has no control.
     // <group>
     int open_serial_port(const char *port_name);
@@ -193,7 +193,7 @@ private:
     virtual int serial_write(const unsigned char *output_buffer,
                              const int &number_of_bytes);
     virtual int serial_read(unsigned char *input_buffer,
-                            const int &number_of_bytes, 
+                            const int &number_of_bytes,
                             const int timeout_usec = 200000);
     virtual int update_parity(const parity_choices &parity);
     virtual int update_baud_rate(const int &baud_rate);
@@ -215,7 +215,7 @@ inline int Serial::write(const unsigned char *output_buffer,
 }
 
 
-inline int Serial::read(unsigned char *input_buffer, const int &number_of_bytes, 
+inline int Serial::read(unsigned char *input_buffer, const int &number_of_bytes,
                         const int tmo_usec)
 {
     return (serial_read(input_buffer, number_of_bytes, tmo_usec));
