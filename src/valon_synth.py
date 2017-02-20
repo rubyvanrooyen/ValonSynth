@@ -20,9 +20,7 @@
 #	P. O. Box 2
 #	Green Bank, WV 24944-0002 USA
 
-"""
-Provides a serial interface to the Valon 500x.
-"""
+"""Provides a serial interface to the Valon 500x."""
 
 # Python modules
 import struct
@@ -88,8 +86,7 @@ class Synthesizer:
         self.conn.setTimeout(timeout)
 
     def get_frequency(self, synth):
-        """
-        Returns the current output frequency for the selected synthesizer.
+        """Returns the current output frequency for the selected synthesizer.
 
         @param synth : synthesizer this command affects (0 for 1, 8 for 2).
         @type  synth : int
@@ -110,8 +107,7 @@ class Synthesizer:
         return (ncount + float(frac) / mod) * epdf / dbf
 
     def set_frequency(self, synth, freq, chan_spacing = 10.):
-        """
-        Sets the synthesizer to the desired frequency
+        """Sets the synthesizer to the desired frequency.
 
         Sets to the closest possible frequency, depending on the channel spacing.
         Range is determined by the minimum and maximum VCO frequency.
@@ -167,8 +163,11 @@ class Synthesizer:
         return ack == ACK
 
     def get_reference(self):
-        """
-        Get reference frequency in MHz
+        """Get reference frequency in MHz.
+
+        @param  No input parameters
+
+        @return Int: Reference input frequency (MHz)
         """
         self.conn.open()
         data = struct.pack('>B', 0x81)
@@ -183,8 +182,10 @@ class Synthesizer:
         return freq
 
     def set_reference(self, freq):
-        """
-        Set reference frequency in MHz
+        """Set reference frequency in MHz.
+
+        For the 5007: this value must be between 5 MHz and 150 MHz, according
+        to the data sheet.
 
         @param freq : frequency in MHz
         @type  freq : float
@@ -203,8 +204,9 @@ class Synthesizer:
         return ack == ACK
 
     def get_rf_level(self, synth):
-        """
-        Returns RF level in dBm
+        """Returns RF level in dBm.
+
+        The current output power level can be one of four values: -4, -1, 2, 5
 
         @param synth : synthesizer address, 0 or 8
         @type  synth : int
@@ -277,8 +279,10 @@ class Synthesizer:
         return ack == ACK
 
     def set_rf_level(self, synth, rf_level):
-        """
-        Set RF level
+        """Set RF level.
+
+        Allows user to select one of four output power levels: -4, -1, 2, 5
+        These levels corresponds approximately to some preset output power.
 
         @param synth : synthesizer address, 0 or 8
         @type  synth : int
@@ -316,8 +320,33 @@ class Synthesizer:
         return ack == ACK
 
     def get_options(self, synth):
-        """
-        Get options tuple:
+        """Get options tuple:
+
+        Output a Tuple of 4 parameters, which can be 0 (disabled) or 1(enabled)
+
+        - double: The reference doubler is used to enable a multiply by 2
+          function before the internal reference divider.
+
+          Enable the doubler when using a 5 MHz external reference frequency.
+          When using the internal 10 MHz reference the doubler should be
+          disabled.
+
+        - half: The reference divide by 2 is used to enable a divide by 2
+          function after the intercal reference divider.
+
+          When enabled, the input to phase-frequency detector will have a 50%
+          duty cycle which will allow for faster lock up time.  In order to use
+          this mode a 20 MHz external reference would have to be available.
+          For normal operations set the reference div by 2 to disabled.
+
+        - r: reference frequency divisor
+
+        - spur: Low noise mode vs Low spur mode.
+
+          Low noise mode affects the operation of the fractional synthesizer,
+          and this mode will produce the lowest phase noise but there may be
+          some spurious output signals.  Low spur mode will reduce spurious
+          output response but the overall phase noise will be higher.
 
         bool double:   if True, reference frequency is doubled
         bool half:     if True, reference frequency is halved
@@ -348,8 +377,7 @@ class Synthesizer:
 
     def set_options(self, synth, double = 0, half = 0, divider = 1,
                     low_spur = 0):
-        """
-        Set options.
+        """Set options.
 
         double and half both True is same as both False.
 
@@ -399,7 +427,9 @@ class Synthesizer:
     def get_ref_select(self):
         """Returns the currently selected reference clock.
 
-        Returns 1 if the external reference is selected, 0 otherwise.
+        @param  No input parameters
+
+        @return: 1 if the external reference is selected, 0 otherwise.
         """
         self.conn.open()
         data = struct.pack('>B', 0x86)
@@ -414,8 +444,7 @@ class Synthesizer:
         return is_ext & 1
 
     def set_ref_select(self, e_not_i = 1):
-        """
-        Selects either internal or external reference clock.
+        """Selects either internal or external reference clock.
 
         @param e_not_i : 1 (external) or 0 (internal); default 1
         @type  e_not_i : int
@@ -434,13 +463,16 @@ class Synthesizer:
         return ack == ACK
 
     def get_vco_range(self, synth):
-        """
-        Returns (min, max) VCO range tuple.
+        """Returns (min, max) VCO range tuple.
+
+       The VCO Frequency Range information is used to limit and check the
+       resulting VCO output frequency, entered in the set frequency request
+       function.
 
         @param synth : synthesizer base address
         @type  synth : int
 
-        @return: min,max in MHz
+        @return: Tuple: (lowest VCO output frequency, highest VCO output frequency) in MHz
         """
         self.conn.open()
         data = struct.pack('>B', 0x83 | synth)
@@ -454,8 +486,10 @@ class Synthesizer:
         return struct.unpack('>HH', data)
 
     def set_vco_range(self, synth, low, high):
-        """
-        Sets VCO range.
+        """Sets VCO range.
+
+        Set the minimum and maximum frequency range of the selected synthesizer
+        VCO.
 
         @param synth : synthesizer base address
         @type  synth : int
@@ -480,8 +514,7 @@ class Synthesizer:
         return ack == ACK
 
     def get_phase_lock(self, synth):
-        """
-        Get phase lock status
+        """Get phase lock status.
 
         @param synth : synthesizer base address
         @type  synth : int
@@ -505,8 +538,7 @@ class Synthesizer:
         return lock > 0
 
     def get_label(self, synth):
-        """
-        Get synthesizer label or name
+        """Get synthesizer label or name.
 
         @param synth : synthesizer base address
         @type  synth : int
@@ -525,13 +557,12 @@ class Synthesizer:
         return data
 
     def set_label(self, synth, label):
-        """
-        Set synthesizer label or name
+        """Set synthesizer label or name.
 
         @param synth : synthesizer base address
         @type  synth : int
 
-        @param label : up to 16 data of text
+        @param label : up to 16 bytes of text
         @type  label : str
 
         @return: True if success (bool)
@@ -548,8 +579,13 @@ class Synthesizer:
         return ack == ACK
 
     def flash(self):
-        """
-        Flash current settings for both synthesizers into non-volatile memory.
+        """Flash current settings for both synthesizers into non-volatile
+        memory.
+
+        The next time the board is powered up, the registers will be set to the
+        values in the non-volatile flash memory.  If the board is powered down
+        before the write flash command command is issued, all the data in the
+        registers will be lost.
 
         @return: True if success (bool)
         """
@@ -565,10 +601,14 @@ class Synthesizer:
         return ack == ACK
 
     def _get_epdf(self, synth):
-        """
-        Returns effective phase detector frequency.
+        """Returns effective phase detector frequency.
 
         This is the reference frequency with options applied.
+
+        @param synth : synthesizer base address
+        @type  synth : int
+
+        @return: frequency
         """
         reference = self.get_reference() / 1e6
         double, half, divider, _ = self.get_options(synth)
