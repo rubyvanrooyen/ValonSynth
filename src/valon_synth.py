@@ -152,8 +152,9 @@ class Synthesizer:
             self.conn.write(data)
             old_data = self.conn.read(24)
             checksum = self.conn.read(1)  # noqa
-        finally:
+        except:
             self.conn.close()
+            raise
         # _verify_checksum(old_data, checksum)
         data = struct.pack('>B24s', 0x00 | synth,
                            _pack_freq_registers(ncount, frac, mod,
@@ -242,9 +243,13 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        except:
+            self.conn.close()
+            raise
         # _verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg4 &= 0xffffffdf  # RF Output power up
@@ -252,9 +257,11 @@ class Synthesizer:
         data = struct.pack('>BIIIIII', 0x00 | synth,
                            reg0, reg1, reg2, reg3, reg4, reg5)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -267,9 +274,13 @@ class Synthesizer:
         """
         self.conn.open()
         data = struct.pack('>B', 0x80 | synth)
-        self.conn.write(data)
-        data = self.conn.read(24)
-        checksum = self.conn.read(1)
+        try:
+            self.conn.write(data)
+            data = self.conn.read(24)
+            checksum = self.conn.read(1)
+        except:
+            self.conn.close()
+            raise
         # _verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg4 &= 0xfffff7ff  # VCO power up
@@ -277,9 +288,11 @@ class Synthesizer:
         data = struct.pack('>BIIIIII', 0x00 | synth,
                            reg0, reg1, reg2, reg3, reg4, reg5)
         checksum = _generate_checksum(data)
-        self.conn.write(data + checksum)
-        data = self.conn.read(1)
-        self.conn.close()
+        try:
+            self.conn.write(data + checksum)
+            data = self.conn.read(1)
+        finally:
+            self.conn.close()
         ack = struct.unpack('>B', data)[0]
         return ack == ACK
 
@@ -307,8 +320,9 @@ class Synthesizer:
             self.conn.write(data)
             data = self.conn.read(24)
             checksum = self.conn.read(1)
-        finally:
+        except:
             self.conn.close()
+            raise
         # _verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg4 &= 0xffffffe7
@@ -409,8 +423,9 @@ class Synthesizer:
             self.conn.write(data)
             data = self.conn.read(24)
             checksum = self.conn.read(1)
-        finally:
+        except:
             self.conn.close()
+            raise
         # _verify_checksum(data, checksum)
         reg0, reg1, reg2, reg3, reg4, reg5 = struct.unpack('>IIIIII', data)
         reg2 &= 0x9c003fff
