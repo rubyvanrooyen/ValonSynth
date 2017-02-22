@@ -16,7 +16,7 @@ The Valon 5007 is specified to have a range of 137 MHz to 4400MHz.
     raw_input('Enter to connect to Valon')
 
     # MTS uses only one of the available synthesizers (currently SYNTH 2)
-    synth = valon_synth.Synthesizer(port, timeout=None)
+    synth = valon_synth.Synthesizer(port, timeout=None, checksum=True)
 
     if synth.get_rf_level(SYNTH_B) != -4:
         synth.set_rf_level(SYNTH_B, -4)
