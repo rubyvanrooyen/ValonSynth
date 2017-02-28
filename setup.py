@@ -7,5 +7,5 @@ setup(name        = 'ValonSynth',
       maintainer  = 'NRAO',
       packages    = ['valon_synth'],
       package_dir = {'valon_synth': 'src'},
-      requires    = ['pyserial'],
+      install_requires = ['pyserial'],
       )
